@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+//import 'package:tflite/tflite.dart';
 
 import 'widgets/CustomEndDrawer.dart';
 
@@ -13,6 +14,22 @@ class TakePicture extends StatefulWidget {
 }
 
 class _TakepicState extends State<TakePicture> {
+  //loadModel() async {
+  //await Tflite.loadModel(
+  //  model: "assets/model.tflite", labels: "assets/labels.txt");
+  //}
+
+  //@override
+  //void initState() {
+  //super.initState();
+  //loadModel();
+  //}
+
+  //void dispose() async {
+  //super.dispose();
+  //await Tflite.close();
+  //}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

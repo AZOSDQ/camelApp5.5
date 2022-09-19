@@ -1,3 +1,8 @@
+import 'dart:io';
+
+import 'package:path/path.dart';
+
+import 'Widgets/CustomEndDrawer.dart';
 import 'package:flutter/material.dart';
 import 'GeneralInformations.dart';
 import 'History.dart';
@@ -6,16 +11,17 @@ import 'statistics.dart';
 import 'AboutUs.dart';
 import 'HelpCenter.dart';
 import 'Home.dart';
-import 'widgets/CustomEndDrawer.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-final Mainbrown = const Color.fromRGBO(137, 115, 88, 1);
-final Mainbeige = const Color.fromRGBO(230, 203, 160, 1);
+const Mainbrown = const Color.fromRGBO(137, 115, 88, 1);
+const Mainbeige = const Color.fromRGBO(255, 240, 199, 1);
+var imageCounter = 0;
 
 class MyHomePage extends StatefulWidget {
   static int CurrentTab = 0;
   static Widget currentScreen = Home();
 
-  const MyHomePage({super.key});
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -24,24 +30,81 @@ class _MyHomePageState extends State<MyHomePage> {
   static const TextStyle _textStyle = TextStyle(
       color: Colors.black45, fontSize: 16, fontWeight: FontWeight.bold);
 
+  //new functions to upload images
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
+
+  File? _photo;
+  final ImagePicker _picker = ImagePicker();
+
+  Future imgFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _photo = File(pickedFile.path);
+        uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future imgFromCamera() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        _photo = File(pickedFile.path);
+        uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future uploadFile() async {
+    if (_photo == null) return;
+    final fileName = basename(_photo!.path);
+    const destination = 'files/';
+
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance
+          .ref(destination)
+          .child('image$imageCounter');
+      imageCounter++;
+      await ref.putFile(_photo!);
+    } catch (e) {
+      print('error occured');
+    }
+  }
+
+//list to switch between the 4 bottom screens
   final List<Widget> screens = [
-    const Home(),
-    const TakePicture(),
-    const Statistics(),
+    Home(),
+    TakePicture(),
+    Statistics(),
     const GetInfoWidget(),
-    const History(),
-    const HelpCenter(),
-    const AboutUs(),
+    History(),
+    HelpCenter(),
+    AboutUs(),
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();
 
+  //Image picker method (to open either camera or gallery to pick an image)
+  Future pickImage(ImageSource source) async {
+    final image = await ImagePicker().pickImage(source: source);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //the top appbar with the logo
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Mainbrown,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: IconThemeData(color: Colors.black),
         toolbarHeight: 60,
         centerTitle: true,
         title: Image.asset(
@@ -52,7 +115,8 @@ class _MyHomePageState extends State<MyHomePage> {
           alignment: Alignment.center,
         ),
       ),
-      endDrawer: const CustomEndDrawer(),
+      //call the drawer
+      endDrawer: CustomEndDrawer(),
       extendBody: true,
 
       body: PageStorage(
@@ -72,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         color: Mainbrown,
-        shape: const CircularNotchedRectangle(),
+        shape: CircularNotchedRectangle(),
         notchMargin: 10,
         child: Container(
           height: 70,
@@ -83,26 +147,28 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  //Home button
+                  //General Information
                   MaterialButton(
                     minWidth: 40,
                     onPressed: () {
                       setState(() {
-                        MyHomePage.currentScreen = Home();
-                        MyHomePage.CurrentTab = 0;
+                        MyHomePage.currentScreen = GetInfoWidget();
+                        MyHomePage.CurrentTab = 3;
                       });
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        //create icon
                         Icon(
-                          MyHomePage.CurrentTab == 0
-                              ? Icons.home
-                              : Icons.home_outlined,
-                          size: 30,
+                          MyHomePage.CurrentTab == 3
+                              ? Icons.info
+                              : Icons.info_outlined,
+                          size: 35,
                         ),
+                        //the label of the icon
                         const Text(
-                          'الرئيسية',
+                          'أنواع الإبل',
                           style: TextStyle(
                             fontFamily: 'DINNextLTArabic',
                             fontWeight: FontWeight.w400,
@@ -111,6 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ],
                     ),
                   ),
+
                   //Statistics Button
                   MaterialButton(
                     minWidth: 40,
@@ -173,28 +240,26 @@ class _MyHomePageState extends State<MyHomePage> {
                       ],
                     ),
                   ),
-                  //General Information
+                  //Home button
                   MaterialButton(
                     minWidth: 40,
                     onPressed: () {
                       setState(() {
-                        MyHomePage.currentScreen = GetInfoWidget();
-                        MyHomePage.CurrentTab = 3;
+                        MyHomePage.currentScreen = Home();
+                        MyHomePage.CurrentTab = 0;
                       });
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        //create icon
                         Icon(
-                          MyHomePage.CurrentTab == 3
-                              ? Icons.info
-                              : Icons.info_outlined,
+                          MyHomePage.CurrentTab == 0
+                              ? Icons.home
+                              : Icons.home_outlined,
                           size: 35,
                         ),
-                        //the label of the icon
                         const Text(
-                          'أنواع الإبل',
+                          'الرئيسية',
                           style: TextStyle(
                             fontFamily: 'DINNextLTArabic',
                             fontWeight: FontWeight.w400,
@@ -246,8 +311,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.black),
                   ),
+                  //open the camera on press to take a picture
                   onPressed: () {
-                    _CameraPopup(context);
+                    imgFromCamera();
+                    Navigator.of(context).pop();
                   },
                   child: const Text(
                     'من الكاميرا',
@@ -274,7 +341,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         MaterialStateProperty.all<Color>(Colors.black),
                   ),
                   onPressed: () {
-                    _CameraPopup(context);
+                    imgFromGallery();
+                    Navigator.of(context).pop();
                   },
                   child: const Text(
                     'من ألبوم الصور',

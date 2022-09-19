@@ -1,9 +1,8 @@
+import 'Widgets/CustomEndDrawer.dart';
 import 'package:flutter/material.dart';
 
-import 'widgets/CustomEndDrawer.dart';
-
-final Mainbrown = const Color.fromRGBO(137, 115, 88, 1);
-final Mainbeige = const Color.fromRGBO(230, 203, 160, 1);
+const Mainbrown = const Color.fromRGBO(137, 115, 88, 1);
+const Mainbeige = const Color.fromRGBO(255, 240, 199, 1);
 
 class AboutUs extends StatefulWidget {
   const AboutUs({super.key});
@@ -21,7 +20,7 @@ class _AboutUs extends State<AboutUs> {
       //The top bar
       appBar: AppBar(
         backgroundColor: Mainbrown,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: IconThemeData(color: Colors.black),
         toolbarHeight: 60,
         centerTitle: true,
         title: Image.asset(
@@ -32,7 +31,7 @@ class _AboutUs extends State<AboutUs> {
           alignment: Alignment.center,
         ),
       ),
-      endDrawer: const CustomEndDrawer(),
+      endDrawer: CustomEndDrawer(),
       //About us text
       body: Column(
         children: const [

@@ -1,16 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'GeneralInformations.dart';
-import 'History.dart';
-import 'TakePicture.dart';
-import 'statistics.dart';
 import 'package:camelapp/splash.dart';
 
-void main() {
+Future<void> main() async {
+  // new initialize firebase to the app
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
-
-final Mainbrown = const Color.fromRGBO(137, 115, 88, 1);
-final Mainbeige = const Color.fromRGBO(230, 203, 160, 1);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

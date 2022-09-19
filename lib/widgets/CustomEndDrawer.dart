@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import '../AboutUs.dart';
 import '../BottomNavigator.dart';
 import '../GeneralInformations.dart';
@@ -60,7 +62,7 @@ class CustomEndDrawer extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (BuildContext context) => const TakePicture()),
+                      builder: (BuildContext context) => TakePicture()),
                 );
               },
             ),
@@ -92,7 +94,7 @@ class CustomEndDrawer extends StatelessWidget {
               ),
               onTap: () {
                 MyHomePage.CurrentTab = 1;
-                MyHomePage.currentScreen = const Statistics();
+                MyHomePage.currentScreen = Statistics();
                 Navigator.pop(context);
                 Navigator.pushReplacement(
                   context,
@@ -131,7 +133,7 @@ class CustomEndDrawer extends StatelessWidget {
               ),
               onTap: () {
                 MyHomePage.CurrentTab = 3;
-                MyHomePage.currentScreen = const GetInfoWidget();
+                MyHomePage.currentScreen = GetInfoWidget();
                 Navigator.pop(context);
                 Navigator.pushReplacement(
                   context,

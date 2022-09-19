@@ -29,7 +29,7 @@ class _SplashState extends State<Splash> {
         child: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          color: Color.fromARGB(255, 229, 208, 174),
+          color: const Color.fromARGB(255, 229, 208, 174),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

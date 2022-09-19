@@ -1,10 +1,10 @@
 import 'HelpCenter_send.dart';
+import 'Widgets/CustomEndDrawer.dart';
 import 'package:flutter/material.dart';
 import 'BottomNavigator.dart';
-import 'widgets/CustomEndDrawer.dart';
 
-const Mainbrown = Color.fromRGBO(137, 115, 88, 1);
-const Mainbeige = Color.fromRGBO(230, 203, 160, 1);
+const Mainbrown = const Color.fromRGBO(137, 115, 88, 1);
+const Mainbeige = const Color.fromRGBO(255, 240, 199, 1);
 final scaffoldKey = GlobalKey<ScaffoldState>();
 
 class HelpCenter extends StatefulWidget {
@@ -33,7 +33,7 @@ class _HelpCenter extends State<HelpCenter> {
           alignment: Alignment.center,
         ),
       ),
-      endDrawer: const CustomEndDrawer(),
+      endDrawer: CustomEndDrawer(),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.max,

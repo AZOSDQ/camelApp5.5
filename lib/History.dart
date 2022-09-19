@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'GeneralInformations.dart';
+import 'TakePicture.dart';
+import 'statistics.dart';
+import 'AboutUs.dart';
+import 'HelpCenter.dart';
+import 'Widgets/CustomEndDrawer.dart';
 
-final Mainbrown = const Color.fromRGBO(137, 115, 88, 1);
-final Mainbeige = const Color.fromRGBO(230, 203, 160, 1);
+const Mainbrown = const Color.fromRGBO(137, 115, 88, 1);
+const Mainbeige = const Color.fromRGBO(255, 240, 199, 1);
 
 class History extends StatefulWidget {
-  const History({super.key});
-
   @override
-  State<History> createState() => _HistoryState();
+  _HistoryState createState() => _HistoryState();
 }
 
 class _HistoryState extends State<History> {
