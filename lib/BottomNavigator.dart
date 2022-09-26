@@ -1,6 +1,10 @@
 import 'dart:io';
 
-import 'package:path/path.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_authenticator/amplify_authenticator.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:path/path.dart' as Path;
 
 import 'Widgets/CustomEndDrawer.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +16,6 @@ import 'AboutUs.dart';
 import 'HelpCenter.dart';
 import 'Home.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 const Mainbrown = const Color.fromRGBO(137, 115, 88, 1);
 const Mainbeige = const Color.fromRGBO(255, 240, 199, 1);
@@ -31,8 +34,6 @@ class _MyHomePageState extends State<MyHomePage> {
       color: Colors.black45, fontSize: 16, fontWeight: FontWeight.bold);
 
   //new functions to upload images
-  firebase_storage.FirebaseStorage storage =
-      firebase_storage.FirebaseStorage.instance;
 
   File? _photo;
   final ImagePicker _picker = ImagePicker();
@@ -40,44 +41,71 @@ class _MyHomePageState extends State<MyHomePage> {
   Future imgFromGallery() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
-    setState(() {
-      if (pickedFile != null) {
-        _photo = File(pickedFile.path);
-        uploadFile();
-      } else {
-        print('No image selected.');
-      }
-    });
+    if (pickedFile == null) {
+      print('No image selected');
+      return;
+    }
+
+    // Upload image with the current time as the key
+    final key = DateTime.now().toString();
+    final file = File(pickedFile.path);
+    const snackBar = SnackBar(content: Text("uploaded"));
+    try {
+      final UploadFileResult result = await Amplify.Storage.uploadFile(
+        local: file,
+        key: key,
+        onProgress: (progress) {
+          print('Fraction completed: ${progress.getFractionCompleted()}');
+        },
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      print('Successfully uploaded image: ${result.key}');
+    } on StorageException catch (e) {
+      print('Error uploading image: $e');
+    }
   }
 
   Future imgFromCamera() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.camera);
 
-    setState(() {
-      if (pickedFile != null) {
-        _photo = File(pickedFile.path);
-        uploadFile();
-      } else {
-        print('No image selected.');
-      }
-    });
-  }
+    if (pickedFile == null) {
+      print('No image selected');
+      return;
+    }
 
-  Future uploadFile() async {
-    if (_photo == null) return;
-    final fileName = basename(_photo!.path);
-    const destination = 'files/';
-
+    // Upload image with the current time as the key
+    final key = DateTime.now().toString();
+    final file = File(pickedFile.path);
+    const snackBar = SnackBar(content: Text("uploaded"));
     try {
-      final ref = firebase_storage.FirebaseStorage.instance
-          .ref(destination)
-          .child('image$imageCounter');
-      imageCounter++;
-      await ref.putFile(_photo!);
-    } catch (e) {
-      print('error occured');
+      final UploadFileResult result = await Amplify.Storage.uploadFile(
+        local: file,
+        key: key,
+        onProgress: (progress) {
+          print('Fraction completed: ${progress.getFractionCompleted()}');
+        },
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      print('Successfully uploaded image: ${result.key}');
+    } on StorageException catch (e) {
+      print('Error uploading image: $e');
     }
   }
+  // Future uploadFile() async {
+  //   if (_photo == null) return;
+  //   final fileName = basename(_photo!.path);
+  //   const destination = 'files/';
+
+  //   try {
+  //     final ref = firebase_storage.FirebaseStorage.instance
+  //         .ref(destination)
+  //         .child('image$imageCounter');
+  //     imageCounter++;
+  //     await ref.putFile(_photo!);
+  //   } catch (e) {
+  //     print('error occured');
+  //   }
+  // }
 
 //list to switch between the 4 bottom screens
   final List<Widget> screens = [
@@ -132,6 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Color.fromRGBO(71, 59, 45, 1),
         elevation: 30,
       ),
+
       //creating the bottom app bar
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(

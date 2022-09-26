@@ -1,10 +1,16 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_authenticator/amplify_authenticator.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'dart:io';
-import 'BottomNavigator.dart' as navigator;
+import 'package:in_app_notification/in_app_notification.dart';
 
-import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+
+import 'dart:io';
+
+import 'package:uuid/uuid.dart';
 
 const Mainbrown = const Color.fromRGBO(137, 115, 88, 1);
 const Mainbeige = const Color.fromRGBO(255, 240, 199, 1);
@@ -18,65 +24,90 @@ class _HomeState extends State<Home> {
   static const TextStyle _textStyle = TextStyle(
       color: Colors.black45, fontSize: 16, fontWeight: FontWeight.bold);
   //new functions to upload images
-  firebase_storage.FirebaseStorage storage =
-      firebase_storage.FirebaseStorage.instance;
 
-  File? _photo;
+  late File _photo;
   final ImagePicker _picker = ImagePicker();
 
   Future imgFromGallery() async {
-    File pickedFile =
-        (await _picker.pickImage(source: ImageSource.gallery)) as File;
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
-    setState(() {
-      if (pickedFile != null) {
-        _photo = File(pickedFile.path);
+    if (pickedFile == null) {
+      print('No image selected');
+      return;
+    }
 
-        uploadFile();
-      } else {
-        print('No image selected.');
-      }
-    });
+    // Upload image with the current time as the key
+    final key = DateTime.now().toString();
+    final file = File(pickedFile.path);
+    const snackBar = SnackBar(content: Text("uploaded"));
+    try {
+      final UploadFileResult result = await Amplify.Storage.uploadFile(
+        local: file,
+        key: key,
+        onProgress: (progress) {
+          print('Fraction completed: ${progress.getFractionCompleted()}');
+        },
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      print('Successfully uploaded image: ${result.key}');
+    } on StorageException catch (e) {
+      print('Error uploading image: $e');
+    }
   }
 
   Future imgFromCamera() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.camera);
 
-    setState(() {
-      if (pickedFile != null) {
-        _photo = File(pickedFile.path);
-        uploadFile();
-      } else {
-        print('No image selected.');
-      }
-    });
-  }
+    if (pickedFile == null) {
+      print('No image selected');
+      return;
+    }
 
-  Future uploadFile() async {
-    if (_photo == null) return;
-    final fileName = basename(_photo!.path);
-    const destination = 'files/';
-    var imageCounter = navigator.imageCounter;
+    // Upload image with the current time as the key
+    final key = DateTime.now().toString();
+    final file = File(pickedFile.path);
+    const snackBar = SnackBar(content: Text("uploaded"));
     try {
-      final ref = firebase_storage.FirebaseStorage.instance
-          .ref(destination)
-          .child('image$imageCounter');
-      navigator.imageCounter++;
-      await ref.putFile(_photo!);
-    } catch (e) {
-      print('error occured');
+      final UploadFileResult result = await Amplify.Storage.uploadFile(
+        local: file,
+        key: key,
+        onProgress: (progress) {
+          print('Fraction completed: ${progress.getFractionCompleted()}');
+        },
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      print('Successfully uploaded image: ${result.key}');
+    } on StorageException catch (e) {
+      print('Error uploading image: $e');
     }
   }
 
-  //Image picker method (to open either camera or gallery to pick an image)
+//////////////////////////////////
 
+  // Future uploadFile() async {
+  //   if (_photo == null) return;
+  //   final fileName = basename(_photo!.path);
+  //   const destination = 'files/';
+  //   var imageCounter = navigator.imageCounter;
+  //   try {
+  //     final ref = firebase_storage.FirebaseStorage.instance
+  //         .ref(destination)
+  //         .child('image$imageCounter');
+  //     navigator.imageCounter++;
+  //     await ref.putFile(_photo!);
+  //   } catch (e) {
+  //     print('error occured');
+  //   }
+  // }
+
+/////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Mainbeige,
-      body:
-          //Background Image
-          Container(
+      body: Container(
+        //Background Image
+
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/images/Best Background so far.png"),
@@ -87,7 +118,7 @@ class _HomeState extends State<Home> {
         child: Center(
           child: Column(
             children: [
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
               const Text(
                 'مرحبا بك في تطبيق\nجملي',
                 style: TextStyle(
@@ -97,7 +128,7 @@ class _HomeState extends State<Home> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               const Text(
                 'يتيح لك التطبيق التعرف على\nنوع الجمال بواسطة الصور',
                 style: TextStyle(
