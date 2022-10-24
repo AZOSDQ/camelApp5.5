@@ -1,4 +1,3 @@
-import 'Widgets/CustomEndDrawer.dart';
 import 'package:flutter/material.dart';
 
 const Mainbrown = const Color.fromRGBO(137, 115, 88, 1);
@@ -16,28 +15,10 @@ class _StatisticsState extends State<Statistics> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Mainbeige,
-      //Top bar with the logo
-      // appBar: AppBar(
-      //   backgroundColor: Mainbrown,
-      //   iconTheme: IconThemeData(color: Colors.black),
-      //   toolbarHeight: 60,
-      //   centerTitle: true,
-      //   title: Image.asset(
-      //     'assets/images/Logo.png',
-      //     fit: BoxFit.contain,
-      //     height: 70,
-      //     width: 70,
-      //     alignment: Alignment.center,
-      //   ),
-      // ),
-
-      // endDrawer: CustomEndDrawer(),
-
-      //Stats
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/Background Image.png"),
+            image: AssetImage("assets/images/background6.jpg"),
             fit: BoxFit.cover,
           ),
         ),
@@ -48,7 +29,7 @@ class _StatisticsState extends State<Statistics> {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Mainbrown,
+                  color: Color.fromRGBO(157, 109, 92, 0.5),
                 ),
                 alignment: Alignment(0, -0.93),
                 width: 390,
@@ -56,7 +37,7 @@ class _StatisticsState extends State<Statistics> {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Mainbeige,
+                    color: Color.fromRGBO(152, 78, 51, 1),
                   ),
                   width: 220,
                   height: 45,

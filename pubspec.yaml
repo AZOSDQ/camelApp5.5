@@ -23,7 +23,13 @@ dependencies:
   amplify_authenticator: ^0.2.3
   google_fonts: ^3.0.1
   image_picker: ^0.8.5+3
-  in_app_notification: ^1.1.2
+  amplify_api: ^0.6.8
+  amplify_datastore: ^0.6.8
+  amplify_core: ^0.6.8
+  hooks_riverpod: ^2.0.2
+  flutter_hooks: ^0.18.5+1
+  provider: ^6.0.4
+  uuid: ^3.0.6
  
   
 

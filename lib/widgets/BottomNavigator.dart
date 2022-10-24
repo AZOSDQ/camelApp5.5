@@ -1,20 +1,17 @@
 import 'dart:io';
 
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:amplify_storage_s3/amplify_storage_s3.dart';
-import 'package:path/path.dart' as Path;
 
-import 'Widgets/CustomEndDrawer.dart';
+import 'CustomEndDrawer.dart';
 import 'package:flutter/material.dart';
-import 'GeneralInformations.dart';
-import 'History.dart';
-import 'TakePicture.dart';
-import 'statistics.dart';
-import 'AboutUs.dart';
-import 'HelpCenter.dart';
-import 'Home.dart';
+import '../screens/GeneralInformations.dart';
+import '../screens/History.dart';
+import '../screens/TakePicture.dart';
+import '../screens/statistics.dart';
+import '../screens/AboutUs.dart';
+import '../screens/HelpCenter.dart';
+import '../screens/Home.dart';
 import 'package:image_picker/image_picker.dart';
 
 const Mainbrown = const Color.fromRGBO(137, 115, 88, 1);
@@ -35,19 +32,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //new functions to upload images
 
-  File? _photo;
-  final ImagePicker _picker = ImagePicker();
+  File? photo;
+  final ImagePicker imagePicker = ImagePicker();
 
   Future imgFromGallery() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+    var currentUser = await Amplify.Auth.getCurrentUser();
     if (pickedFile == null) {
       print('No image selected');
       return;
     }
-
+    var userid = currentUser.userId;
     // Upload image with the current time as the key
-    final key = DateTime.now().toString();
+    final key = "$userid/$uuid.jpg";
     final file = File(pickedFile.path);
     const snackBar = SnackBar(content: Text("uploaded"));
     try {
@@ -66,15 +63,16 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future imgFromCamera() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
-
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
+    var currentUser = await Amplify.Auth.getCurrentUser();
     if (pickedFile == null) {
       print('No image selected');
       return;
     }
-
+    var userid = currentUser.userId;
+    var authuser = AmplifyAuthCognito().getCurrentUser();
     // Upload image with the current time as the key
-    final key = DateTime.now().toString();
+    final key = "$userid/$uuid.jpg";
     final file = File(pickedFile.path);
     const snackBar = SnackBar(content: Text("uploaded"));
     try {
@@ -91,23 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
       print('Error uploading image: $e');
     }
   }
-  // Future uploadFile() async {
-  //   if (_photo == null) return;
-  //   final fileName = basename(_photo!.path);
-  //   const destination = 'files/';
 
-  //   try {
-  //     final ref = firebase_storage.FirebaseStorage.instance
-  //         .ref(destination)
-  //         .child('image$imageCounter');
-  //     imageCounter++;
-  //     await ref.putFile(_photo!);
-  //   } catch (e) {
-  //     print('error occured');
-  //   }
-  // }
-
-//list to switch between the 4 bottom screens
   final List<Widget> screens = [
     Home(),
     TakePicture(),
@@ -120,26 +102,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final PageStorageBucket bucket = PageStorageBucket();
 
-  //Image picker method (to open either camera or gallery to pick an image)
-  Future pickImage(ImageSource source) async {
-    final image = await ImagePicker().pickImage(source: source);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       //the top appbar with the logo
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Mainbrown,
+        backgroundColor: Color.fromRGBO(152, 78, 51, 1),
         iconTheme: IconThemeData(color: Colors.black),
         toolbarHeight: 60,
         centerTitle: true,
         title: Image.asset(
-          'assets/images/Logo.png',
+          'assets/images/camelicon.png',
           fit: BoxFit.contain,
-          height: 70,
-          width: 70,
+          height: 65,
+          width: 65,
           alignment: Alignment.center,
         ),
       ),
@@ -155,16 +132,16 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.camera_alt),
         onPressed: () {
-          _CameraPopup(context);
+          cameraPopUp(context);
         },
-        backgroundColor: Color.fromRGBO(71, 59, 45, 1),
+        backgroundColor: Color.fromRGBO(152, 78, 51, 1),
         elevation: 30,
       ),
 
       //creating the bottom app bar
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
-        color: Mainbrown,
+        color: Color.fromRGBO(152, 78, 51, 1),
         shape: CircularNotchedRectangle(),
         notchMargin: 10,
         child: Container(
@@ -306,7 +283,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _CameraPopup(context) {
+  void cameraPopUp(context) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {

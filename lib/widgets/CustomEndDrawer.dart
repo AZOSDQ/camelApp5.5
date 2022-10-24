@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
+import '../services/AuthService.dart';
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import '../AboutUs.dart';
-import '../BottomNavigator.dart';
-import '../GeneralInformations.dart';
-import '../HelpCenter.dart';
-import '../History.dart';
-import '../TakePicture.dart';
-import '../statistics.dart';
+import '../screens/AboutUs.dart';
+import 'BottomNavigator.dart';
+import '../screens/GeneralInformations.dart';
+import '../screens/HelpCenter.dart';
+import '../screens/History.dart';
+import '../screens/TakePicture.dart';
+import '../screens/statistics.dart';
 
 const Mainbrown = Color.fromRGBO(137, 115, 88, 1);
-const Mainbeige = Color.fromRGBO(230, 203, 160, 1);
+const Mainbeige = const Color.fromRGBO(255, 240, 199, 1);
 
 class CustomEndDrawer extends StatelessWidget {
   const CustomEndDrawer({
@@ -28,7 +27,8 @@ class CustomEndDrawer extends StatelessWidget {
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(30), bottomLeft: Radius.circular(30)),
       ),
-      backgroundColor: Mainbrown,
+      backgroundColor: //Color.fromRGBO(152, 78, 51,0.5), //Color.fromRGBO(204, 123, 76, 1),
+          Color.fromRGBO(173, 222, 254, 0.3),
       child: ListView(
         children: <Widget>[
           //identfy camel option (class takePicture)
@@ -45,7 +45,8 @@ class CustomEndDrawer extends StatelessWidget {
                     topRight: Radius.circular(10),
                     bottomRight: Radius.circular(10)),
               ),
-              tileColor: Mainbeige,
+              tileColor: //Color.fromRGBO(173, 222, 254, 0.5),
+                  Color.fromRGBO(204, 123, 76, 1),
               title: const Text(
                 "تعرف على جمل",
                 style: TextStyle(fontSize: 20, fontFamily: 'DINNextLTArabic'),
@@ -81,7 +82,8 @@ class CustomEndDrawer extends StatelessWidget {
                     topRight: Radius.circular(10),
                     bottomRight: Radius.circular(10)),
               ),
-              tileColor: Mainbeige,
+              tileColor: Color.fromRGBO(204, 123, 76, 1),
+              //Color.fromRGBO(152, 78, 51, 1),
               trailing: const Icon(
                 Icons.analytics,
                 color: Colors.black,
@@ -110,7 +112,7 @@ class CustomEndDrawer extends StatelessWidget {
             elevation: 0,
             color: Colors.transparent,
             child: ListTile(
-              tileColor: Mainbeige,
+              tileColor: Color.fromRGBO(204, 123, 76, 1),
               minVerticalPadding: 10,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -149,7 +151,7 @@ class CustomEndDrawer extends StatelessWidget {
             elevation: 0,
             color: Colors.transparent,
             child: ListTile(
-              tileColor: Mainbeige,
+              tileColor: Color.fromRGBO(204, 123, 76, 1),
               minVerticalPadding: 10,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -186,7 +188,7 @@ class CustomEndDrawer extends StatelessWidget {
             elevation: 0,
             color: Colors.transparent,
             child: ListTile(
-              tileColor: Mainbeige,
+              tileColor: Color.fromRGBO(204, 123, 76, 1),
               minVerticalPadding: 10,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -221,7 +223,7 @@ class CustomEndDrawer extends StatelessWidget {
             elevation: 0,
             color: Colors.transparent,
             child: ListTile(
-              tileColor: Mainbeige,
+              tileColor: Color.fromRGBO(204, 123, 76, 1),
               minVerticalPadding: 10,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -247,6 +249,36 @@ class CustomEndDrawer extends StatelessWidget {
                   MaterialPageRoute(
                       builder: (BuildContext context) => const AboutUs()),
                 );
+              },
+            ),
+          ),
+
+          const SizedBox(height: 5),
+          Card(
+            elevation: 0,
+            color: Colors.transparent,
+            child: ListTile(
+              tileColor: Color.fromRGBO(204, 123, 76, 1),
+              minVerticalPadding: 10,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    bottomLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
+                    bottomRight: Radius.circular(10)),
+              ),
+              trailing: const Icon(
+                Icons.logout,
+                color: Colors.black,
+                size: 35,
+              ),
+              title: const Text(
+                "تسجيل الخروج",
+                style: TextStyle(fontSize: 20, fontFamily: 'DINNextLTArabic'),
+                textAlign: TextAlign.right,
+              ),
+              onTap: () async {
+                AuthService().signOut(context);
               },
             ),
           ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'BottomNavigator.dart';
+import '../widgets/BottomNavigator.dart';
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -13,10 +13,10 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     super.initState();
-    _navigatetohome();
+    navigateToHome();
   }
 
-  _navigatetohome() async {
+  navigateToHome() async {
     await Future.delayed(const Duration(milliseconds: 3000), () {});
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => MyHomePage()));
@@ -29,13 +29,13 @@ class _SplashState extends State<Splash> {
         child: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          color: const Color.fromARGB(255, 229, 208, 174),
+          color: const Color.fromRGBO(137, 115, 88, 1),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 child: Image.asset(
-                  'assets/images/Logo.png',
+                  'assets/images/camelicon.png',
                   width: 330,
                   height: 150,
                 ),

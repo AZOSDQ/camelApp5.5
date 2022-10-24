@@ -1,15 +1,8 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:in_app_notification/in_app_notification.dart';
-
-import 'package:path_provider/path_provider.dart';
-
 import 'dart:io';
-
 import 'package:uuid/uuid.dart';
 
 const Mainbrown = const Color.fromRGBO(137, 115, 88, 1);
@@ -26,18 +19,19 @@ class _HomeState extends State<Home> {
   //new functions to upload images
 
   late File _photo;
-  final ImagePicker _picker = ImagePicker();
+  final ImagePicker imagepicker = ImagePicker();
 
   Future imgFromGallery() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
+    final pickedFile = await imagepicker.pickImage(source: ImageSource.gallery);
+    var currentUser = await Amplify.Auth.getCurrentUser();
     if (pickedFile == null) {
       print('No image selected');
       return;
     }
-
+    var userid = currentUser.userId;
+    var uuid = const Uuid().v4();
     // Upload image with the current time as the key
-    final key = DateTime.now().toString();
+    final key = "$userid/$uuid.jpg";
     final file = File(pickedFile.path);
     const snackBar = SnackBar(content: Text("uploaded"));
     try {
@@ -56,15 +50,16 @@ class _HomeState extends State<Home> {
   }
 
   Future imgFromCamera() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
-
+    final pickedFile = await imagepicker.pickImage(source: ImageSource.camera);
+    var currentUser = await Amplify.Auth.getCurrentUser();
     if (pickedFile == null) {
       print('No image selected');
       return;
     }
-
+    var userid = currentUser.userId;
+    var authuser = AmplifyAuthCognito().getCurrentUser();
     // Upload image with the current time as the key
-    final key = DateTime.now().toString();
+    final key = "$userid/$uuid.jpg";
     final file = File(pickedFile.path);
     const snackBar = SnackBar(content: Text("uploaded"));
     try {
@@ -82,25 +77,6 @@ class _HomeState extends State<Home> {
     }
   }
 
-//////////////////////////////////
-
-  // Future uploadFile() async {
-  //   if (_photo == null) return;
-  //   final fileName = basename(_photo!.path);
-  //   const destination = 'files/';
-  //   var imageCounter = navigator.imageCounter;
-  //   try {
-  //     final ref = firebase_storage.FirebaseStorage.instance
-  //         .ref(destination)
-  //         .child('image$imageCounter');
-  //     navigator.imageCounter++;
-  //     await ref.putFile(_photo!);
-  //   } catch (e) {
-  //     print('error occured');
-  //   }
-  // }
-
-/////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,7 +86,7 @@ class _HomeState extends State<Home> {
 
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/Best Background so far.png"),
+            image: AssetImage("assets/images/background6.jpg"),
             fit: BoxFit.cover,
           ),
         ),
@@ -145,7 +121,7 @@ class _HomeState extends State<Home> {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Mainbrown,
+                    color: Color.fromRGBO(142, 99, 83, 0.8),
                   ),
                   width: 200,
                   height: 190,
@@ -155,7 +131,7 @@ class _HomeState extends State<Home> {
                           MaterialStateProperty.all<Color>(Colors.black),
                     ),
                     onPressed: () {
-                      _CameraPopup(context);
+                      cameraPopUp(context);
                     },
                     child: Column(
                       textDirection: TextDirection.rtl,
@@ -169,7 +145,7 @@ class _HomeState extends State<Home> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: Text(
-                            'تعرف على نوع الجمل',
+                            "اضغط هنا للتعرف على نوع الجمل",
                             style: TextStyle(
                               fontSize: 30,
                               fontFamily: 'DINNextLTArabic',
@@ -177,18 +153,6 @@ class _HomeState extends State<Home> {
                             ),
                             textAlign: TextAlign.center,
                             textDirection: TextDirection.rtl,
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            'اضغط هنا\nلتحديد صورة الجمل',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontFamily: 'DINNextLTArabic',
-                              fontWeight: FontWeight.w400,
-                            ),
-                            textAlign: TextAlign.right,
                           ),
                         ),
                       ],
@@ -203,7 +167,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void _CameraPopup(context) {
+  void cameraPopUp(context) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {

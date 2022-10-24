@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-//import 'package:tflite/tflite.dart';
 
-import 'widgets/CustomEndDrawer.dart';
+import '../widgets/CustomEndDrawer.dart';
 
 final Mainbrown = const Color.fromRGBO(137, 115, 88, 1);
 final Mainbeige = const Color.fromRGBO(230, 203, 160, 1);
@@ -14,22 +13,6 @@ class TakePicture extends StatefulWidget {
 }
 
 class _TakepicState extends State<TakePicture> {
-  //loadModel() async {
-  //await Tflite.loadModel(
-  //  model: "assets/model.tflite", labels: "assets/labels.txt");
-  //}
-
-  //@override
-  //void initState() {
-  //super.initState();
-  //loadModel();
-  //}
-
-  //void dispose() async {
-  //super.dispose();
-  //await Tflite.close();
-  //}
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +24,7 @@ class _TakepicState extends State<TakePicture> {
         toolbarHeight: 60,
         centerTitle: true,
         title: Image.asset(
-          'assets/images/Logo.png',
+          'assets/images/camelicon.png',
           fit: BoxFit.contain,
           height: 70,
           width: 70,
@@ -54,7 +37,7 @@ class _TakepicState extends State<TakePicture> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-              image: AssetImage("assets/images/Background Image.png"),
+              image: AssetImage("assets/images/background6.jpg"),
               fit: BoxFit.cover),
         ),
         child: Center(
